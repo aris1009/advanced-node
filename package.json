@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "setupTestFrameworkScriptFile": "./tests/setup.js"
+  },
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js --ignore tests",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "test": "jest --testURL=\"http://localhost\""
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +32,7 @@
     "path-parser": "^2.0.2",
     "puppeteer": "^1.18.0",
     "redis": "^2.8.0",
+    "request": "^2.88.0",
     "uuid": "^3.2.1"
   }
 }
