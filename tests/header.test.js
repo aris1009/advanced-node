@@ -1,17 +1,14 @@
-const pup = require('puppeteer');
-const sessionFactory = require('./factories/session.factory');
-const userFactory = require('./factories/user.factory');
+const Page = require('./helpers/page');
 
-let browser, page;
+let page;
 
 beforeEach(async () => {
-    browser = await pup.launch({});
-    page = await browser.newPage();
+    page = await Page.build();
     await page.goto('http://localhost:3000/');
 });
 
 afterEach(async () => {
-    await browser.close();
+    await page.close();
 })
 
 test('The header has correct text', async () => {
@@ -28,16 +25,11 @@ test('Clicking log in starts auth flow', async () => {
 });
 
 test('Logged in, must show Logout button', async () => {
-    const user = await userFactory();
-    const { session, sig } = sessionFactory(user);
-
-    await page.setCookie({ name: 'session', value: session });
-    await page.setCookie({ name: 'session.sig', value: sig });
-    await page.goto('http://localhost:3000/');
+    await page.login();
 
     const anchor = 'a[href="/auth/logout"]';
     await page.waitFor(anchor);
-
     const text = await page.$eval(anchor, el => el.innerHTML);
+
     expect(text).toEqual('Logout');
 });
